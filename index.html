@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Colección de Relojes</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #0a0a0f;
+      color: #ffffff;
+      font-family: 'Georgia', serif;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 40px;
+      border-bottom: 1px solid #222;
+    }
+
+    header h1 {
+      font-size: 32px;
+      font-weight: 400;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #e8e0d0;
+    }
+
+    header p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #666;
+      letter-spacing: 0.08em;
+    }
+
+    .filtros {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 30px 20px 0;
+    }
+
+    .filtro-btn {
+      padding: 8px 20px;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Georgia', serif;
+    }
+
+    .filtro-btn.activo {
+      background: #e8e0d0;
+      border: 1px solid #e8e0d0;
+      color: #0a0a0f;
+    }
+
+    .filtro-btn.inactivo {
+      background: transparent;
+      border: 1px solid #333;
+      color: #666;
+    }
+
+    .filtro-btn.inactivo:hover {
+      border-color: #666;
+      color: #ccc;
+    }
+
+    .galeria {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+      padding: 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .tarjeta {
+      background-color: #13131a;
+      border: 1px solid #222;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .tarjeta:hover {
+      transform: translateY(-4px);
+      border-color: #444;
+    }
+
+    .tarjeta-imagen {
+      width: 100%;
+      height: 220px;
+      background-color: #1a1a24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .tarjeta-imagen img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .placeholder-icon {
+      font-size: 48px;
+      opacity: 0.15;
+    }
+
+    .badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+    }
+
+    .badge-coleccion {
+      background-color: #0f3020;
+      color: #4ade80;
+      border: 1px solid #1a5030;
+    }
+
+    .badge-wishlist {
+      background-color: #2a1f00;
+      color: #f59e0b;
+      border: 1px solid #4a3500;
+    }
+
+    .tarjeta-info { padding: 18px; }
+
+    .tarjeta-marca {
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .tarjeta-nombre {
+      font-size: 17px;
+      color: #e8e0d0;
+      margin-bottom: 4px;
+    }
+
+    .tarjeta-ref {
+      font-size: 12px;
+      color: #444;
+      margin-bottom: 16px;
+    }
+
+    .precios {
+      border-top: 1px solid #1e1e28;
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .precio-fila {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    .precio-fuente {
+      color: #555;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .precio-fuente:hover { color: #aaa; }
+
+    .precio-punto {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .precio-valor { color: #ccc; font-size: 13px; }
+    .precio-mejor { color: #4ade80; }
+
+    .tarjeta-botones {
+      display: flex;
+      gap: 8px;
+      padding: 14px 18px 18px;
+      border-top: 1px solid #1e1e28;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 9px;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+      transition: background-color 0.2s;
+      font-family: 'Georgia', serif;
+    }
+
+    .btn-ficha {
+      background: transparent;
+      border: 1px solid #333;
+      color: #888;
+    }
+
+    .btn-ficha:hover { background: #1e1e28; color: #ccc; }
+
+    .btn-3d {
+      background: #0f3020;
+      border: 1px solid #1a5030;
+      color: #4ade80;
+    }
+
+    .btn-3d:hover { background: #1a4030; }
+
+    footer {
+      text-align: center;
+      padding: 40px;
+      color: #333;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      border-top: 1px solid #1a1a1a;
+      margin-top: 40px;
+    }
+
+    /* ── FICHA MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.88);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.visible {
+      display: flex;
+    }
+
+    .modal {
+      background: #13131a;
+      border: 1px solid #2a2a38;
+      border-radius: 16px;
+      width: 100%;
+      max-width: 800px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #1e1e28;
+      position: sticky;
+      top: 0;
+      background: #13131a;
+      z-index: 1;
+    }
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-titulo {
+      font-size: 13px;
+      color: #555;
+      letter-spacing: 0.05em;
+    }
+
+    .modal-cerrar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #1e1e28;
+      border: 1px solid #2a2a38;
+      color: #666;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s;
+    }
+
+    .modal-cerrar:hover {
+      background: #2a2a38;
+      color: #ccc;
+    }
+
+    .modal-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 340px;
+    }
+
+    @media (max-width: 600px) {
+      .modal-body { grid-template-columns: 1fr; }
+    }
+
+    .modal-imagen {
+      background: #1a1a24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      border-right: 1px solid #1e1e28;
+      min-height: 300px;
+    }
+
+    .modal-imagen img {
+      max-width: 100%;
+      max-height: 280px;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+
+    .modal-datos {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-marca {
+      font-size: 11px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #555;
+    }
+
+    .modal-nombre {
+      font-size: 24px;
+      color: #e8e0d0;
+      font-weight: 400;
+      line-height: 1.2;
+      margin: 4px 0;
+    }
+
+    .modal-ref {
+      font-size: 12px;
+      color: #444;
+    }
+
+    .modal-descripcion {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    .specs-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .spec-item {
+      background: #1a1a24;
+      border-radius: 6px;
+      padding: 8px 10px;
+    }
+
+    .spec-label {
+      font-size: 10px;
+      color: #555;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+      font-family: sans-serif;
+    }
+
+    .spec-valor {
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .modal-precios {
+      border-top: 1px solid #1e1e28;
+      padding-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .modal-precios-titulo {
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #444;
+      margin-bottom: 4px;
+      font-family: sans-serif;
+    }
+
+    .modal-footer {
+      padding: 16px 20px;
+      border-top: 1px solid #1e1e28;
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-modal-3d {
+      flex: 1;
+      padding: 11px;
+      background: #0f3020;
+      border: 1px solid #1a5030;
+      color: #4ade80;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: background 0.2s;
+    }
+
+    .btn-modal-3d:hover { background: #1a4030; }
+
+    .btn-modal-cerrar {
+      padding: 11px 24px;
+      background: transparent;
+      border: 1px solid #333;
+      color: #666;
+      border-radius: 8px;
+      font-size: 13px;
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: all 0.2s;
+    }
+
+    .btn-modal-cerrar:hover {
+      background: #1e1e28;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Mi Colección de Relojes</h1>
+    <p>Colección personal · Wishlist · Precios en tiempo real</p>
+  </header>
+
+  <div class="filtros">
+    <button class="filtro-btn activo" onclick="filtrar('todos', this)">Todos</button>
+    <button class="filtro-btn inactivo" onclick="filtrar('coleccion', this)">Mi colección</button>
+    <button class="filtro-btn inactivo" onclick="filtrar('wishlist', this)">Wishlist</button>
+  </div>
+
+  <div class="galeria" id="galeria"></div>
+
+  <footer>
+    <p>Mi Colección de Relojes · Todos los precios son referenciales</p>
+  </footer>
+
+  <!-- MODAL FICHA -->
+  <div class="modal-overlay" id="modalOverlay" onclick="cerrarModal(event)">
+    <div class="modal" id="modal">
+      <div class="modal-header">
+        <div class="modal-header-left">
+          <span class="badge" id="modalBadge"></span>
+          <span class="modal-titulo">Ficha del reloj</span>
+        </div>
+        <button class="modal-cerrar" onclick="cerrarModalBtn()">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-imagen">
+          <img id="modalImg" src="" alt="">
+        </div>
+        <div class="modal-datos">
+          <div>
+            <p class="modal-marca" id="modalMarca"></p>
+            <p class="modal-nombre" id="modalNombre"></p>
+            <p class="modal-ref" id="modalRef"></p>
+          </div>
+          <p class="modal-descripcion" id="modalDesc"></p>
+          <div class="specs-grid" id="modalSpecs"></div>
+          <div class="modal-precios">
+            <p class="modal-precios-titulo">Precios por marketplace</p>
+            <div id="modalPrecios"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-modal-3d" id="btnModal3d">Ver en 3D interactivo</button>
+        <button class="btn-modal-cerrar" onclick="cerrarModalBtn()">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librerías 3D -->
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+
+  <!-- Visor 3D HTML -->
+  <div id="visorOverlay" style="
+    display:none; position:fixed; inset:0; background:rgba(0,0,0,0.95);
+    z-index:200; flex-direction:column; align-items:center; justify-content:center;
+    padding:20px;">
+
+    <div style="width:100%; max-width:900px; background:#13131a; border:1px solid #2a2a38;
+      border-radius:16px; overflow:hidden;">
+
+      <div style="display:flex; align-items:center; justify-content:space-between;
+        padding:16px 20px; border-bottom:1px solid #1e1e28;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span style="font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#555;">Visor 3D —</span>
+          <span id="visorTitulo" style="font-size:14px; color:#e8e0d0;"></span>
+        </div>
+        <button onclick="cerrarVisor()" style="
+          width:30px; height:30px; border-radius:50%; background:#1e1e28;
+          border:1px solid #2a2a38; color:#666; cursor:pointer; font-size:14px;">✕</button>
+      </div>
+
+      <div style="position:relative; width:100%; height:520px;">
+        <canvas id="visorCanvas" style="width:100%; height:100%; display:block;"></canvas>
+
+        <div id="visorLoading" style="
+          display:none; position:absolute; inset:0;
+          align-items:center; justify-content:center; flex-direction:column; gap:12px;
+          background:rgba(10,10,15,0.85);">
+          <div style="width:40px; height:40px; border:2px solid #1e1e28;
+            border-top-color:#4ade80; border-radius:50%;
+            animation: spin 1s linear infinite;"></div>
+          <span id="visorPct" style="font-size:13px; color:#555;">0%</span>
+        </div>
+
+        <div id="visorError" style="
+          display:none; position:absolute; inset:0;
+          align-items:center; justify-content:center;
+          background:rgba(10,10,15,0.85);">
+          <p style="font-size:13px; color:#666;">No se pudo cargar el modelo 3D</p>
+        </div>
+
+        <div style="position:absolute; bottom:14px; left:50%; transform:translateX(-50%);
+          font-size:11px; color:rgba(255,255,255,0.25); white-space:nowrap; pointer-events:none;">
+          Arrastra para rotar · Scroll para zoom · Clic derecho para mover
+        </div>
+      </div>
+
+      <div style="padding:14px 20px; border-top:1px solid #1e1e28; display:flex; justify-content:flex-end;">
+        <button onclick="cerrarVisor()" style="
+          padding:9px 24px; background:transparent; border:1px solid #333;
+          color:#666; border-radius:8px; font-size:13px; cursor:pointer;
+          font-family:'Georgia',serif;">Cerrar</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    #visorOverlay.visible { display:flex !important; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+
+  <script src="relojes.js"></script>
+
+  <script>
+    const coloresPuntos = ["#4ade80", "#60a5fa", "#f59e0b", "#f87171", "#c084fc"];
+    let filtroActual = "todos";
+
+    function filtrar(tipo, btn) {
+      filtroActual = tipo;
+      document.querySelectorAll('.filtro-btn').forEach(b => b.className = 'filtro-btn inactivo');
+      btn.className = 'filtro-btn activo';
+      renderizar();
+    }
+
+    function renderizar() {
+      const galeria = document.getElementById('galeria');
+      const lista = filtroActual === 'todos' ? relojes : relojes.filter(r => r.tipo === filtroActual);
+
+      galeria.innerHTML = lista.map(reloj => {
+        const precioMinimo = Math.min(...reloj.precios.map(p => p.precio));
+        const preciosHTML = reloj.precios.map((p, i) => `
+          <div class="precio-fila">
+            <a class="precio-fuente" href="${p.url}" target="_blank">
+              <span class="precio-punto" style="background:${coloresPuntos[i]}"></span>
+              ${p.tienda}
+            </a>
+            <span class="precio-valor ${p.precio === precioMinimo ? 'precio-mejor' : ''}">
+              $${p.precio.toLocaleString()}
+            </span>
+          </div>
+        `).join('');
+
+        const imagenHTML = reloj.foto
+          ? `<img src="${reloj.foto}" alt="${reloj.marca} ${reloj.modelo}">`
+          : `<span class="placeholder-icon">⌚</span>`;
+
+        return `
+          <div class="tarjeta">
+            <div class="tarjeta-imagen">
+              <span class="badge badge-${reloj.tipo}">
+                ${reloj.tipo === 'coleccion' ? 'Colección' : 'Wishlist'}
+              </span>
+              ${imagenHTML}
+            </div>
+            <div class="tarjeta-info">
+              <p class="tarjeta-marca">${reloj.marca}</p>
+              <p class="tarjeta-nombre">${reloj.modelo}</p>
+              <p class="tarjeta-ref">Ref. ${reloj.referencia} · ${reloj.año}</p>
+              <div class="precios">${preciosHTML}</div>
+            </div>
+            <div class="tarjeta-botones">
+              <button class="btn btn-ficha" onclick="abrirFicha(${reloj.id})">Ver ficha</button>
+              <button class="btn btn-3d" onclick="iniciarVisor('modelos/${reloj.id === 1 ? 'rolex-submariner.glb' : ''}', '${reloj.marca} ${reloj.modelo}')">Ver 3D</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function abrirFicha(id) {
+      const reloj = relojes.find(r => r.id === id);
+      if (!reloj) return;
+
+      const badge = document.getElementById('modalBadge');
+      badge.textContent = reloj.tipo === 'coleccion' ? 'Colección' : 'Wishlist';
+      badge.className = `badge badge-${reloj.tipo}`;
+
+      document.getElementById('modalImg').src = reloj.foto || '';
+      document.getElementById('modalImg').alt = `${reloj.marca} ${reloj.modelo}`;
+      document.getElementById('modalMarca').textContent = reloj.marca;
+      document.getElementById('modalNombre').textContent = reloj.modelo;
+      document.getElementById('modalRef').textContent = `Ref. ${reloj.referencia} · ${reloj.año}`;
+      document.getElementById('modalDesc').textContent = reloj.descripcion;
+
+      const specsHTML = Object.entries(reloj.specs).map(([k, v]) => `
+        <div class="spec-item">
+          <p class="spec-label">${k.charAt(0).toUpperCase() + k.slice(1)}</p>
+          <p class="spec-valor">${v}</p>
+        </div>
+      `).join('');
+      document.getElementById('modalSpecs').innerHTML = specsHTML;
+
+      const precioMinimo = Math.min(...reloj.precios.map(p => p.precio));
+      const preciosHTML = reloj.precios.map((p, i) => `
+        <div class="precio-fila" style="margin-bottom:8px;">
+          <a class="precio-fuente" href="${p.url}" target="_blank" style="color:#555;display:flex;align-items:center;gap:6px;text-decoration:none;">
+            <span style="width:6px;height:6px;border-radius:50%;background:${coloresPuntos[i]};flex-shrink:0;display:inline-block;"></span>
+            ${p.tienda}
+          </a>
+          <span style="font-size:13px;${p.precio === precioMinimo ? 'color:#4ade80;font-weight:500;' : 'color:#ccc;'}">
+            $${p.precio.toLocaleString()}
+          </span>
+        </div>
+      `).join('');
+      document.getElementById('modalPrecios').innerHTML = preciosHTML;
+
+      document.getElementById('modalOverlay').classList.add('visible');
+      document.body.style.overflow = 'hidden';
+     document.getElementById('btnModal3d').onclick = () => {
+        cerrarModalBtn();
+        iniciarVisor(`modelos/${reloj.foto ? reloj.marca.toLowerCase().replace(' ','-') + '-' + reloj.modelo.toLowerCase().replace(' ','-') + '.glb' : 'rolex-submariner.glb'}`, `${reloj.marca} ${reloj.modelo}`);
+    }; 
+    }
+
+    function cerrarModalBtn() {
+      document.getElementById('modalOverlay').classList.remove('visible');
+      document.body.style.overflow = '';
+    }
+
+    function cerrarModal(event) {
+      if (event.target === document.getElementById('modalOverlay')) {
+        cerrarModalBtn();
+      }
+    }
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') cerrarModalBtn();
+    });
+
+    renderizar();
+  </script>
+  
+<script src="visor.js"></script>
+</body>
+</html>
